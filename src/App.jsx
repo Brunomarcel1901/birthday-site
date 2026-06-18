@@ -129,9 +129,9 @@ words={[
 loop={5}
 cursor
 cursorStyle="|"
-typeSpeed={50}
-deleteSpeed={30}
-delaySpeed={1200}
+typeSpeed={110}
+deleteSpeed={100}
+delaySpeed={1500}
 />
 </div>
 </div>
