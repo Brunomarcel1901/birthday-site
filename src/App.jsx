@@ -130,7 +130,7 @@ loop={5}
 cursor
 cursorStyle="|"
 typeSpeed={110}
-deleteSpeed={100}
+deleteSpeed={50}
 delaySpeed={1500}
 />
 </div>
