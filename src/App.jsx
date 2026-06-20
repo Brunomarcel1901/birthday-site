@@ -1,159 +1,208 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import confetti from "canvas-confetti";
 import { Typewriter } from "react-simple-typewriter";
-import { FaGift, FaMusic, FaEnvelopeOpen } from "react-icons/fa";
+import { useEffect } from "react";
+
+import {
+  FaGift,
+  FaPlay,
+  FaTrophy,
+} from "react-icons/fa";
+
 import "./App.css";
 
 export default function App() {
+  const [open, setOpen] = useState(false);
+  const [unlock, setUnlock] = useState(false);
+  const [name, setName] = useState("");
 
-const audioRef = useRef(null);
-const cardRef = useRef(null);
+  const cardRef = useRef(null);
 
-const [open, setOpen] = useState(false);
-const [showGift, setShowGift] = useState(false);
-const [openEnvelope, setOpenEnvelope] = useState(false);
+  const handleOpen = () => {
+    if (!name.trim()) return;
 
-useEffect(() => {
-audioRef.current = new Audio("/music.mp3");
-audioRef.current.loop = true;
-audioRef.current.volume = 0.25;
+    confetti({
+      particleCount: 180,
+      spread: 90,
+      origin: { y: 0.6 },
+    });
 
-audioRef.current.play().catch(() => {
-document.addEventListener("click", () => {
-audioRef.current.play();
-}, { once: true });
-});
-}, []);
+    setOpen(true);
+  };
 
-/* 🎊 CONFETTI ON OPEN */
-const handleOpen = () => {
-confetti({
-particleCount: 160,
-spread: 90,
-origin: { y: 0.6 }
-});
-setOpen(true);
-};
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
 
-/* 🎮 3D TILT EFFECT */
-const handleMouseMove = (e) => {
-const el = cardRef.current;
-if (!el) return;
+    const rotateX =
+      (window.innerHeight / 2 - e.clientY) / 30;
 
-const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
-const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+    const rotateY =
+      (window.innerWidth / 2 - e.clientX) / 30;
 
-el.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-};
+    cardRef.current.style.transform =
+      `rotateX(${rotateX}deg)
+       rotateY(${-rotateY}deg)`;
+  };
 
-const resetTilt = () => {
-const el = cardRef.current;
-if (!el) return;
-el.style.transform = "rotateY(0deg) rotateX(0deg)";
-};
+  const resetTilt = () => {
+    if (!cardRef.current) return;
 
-return (
-<div className="page" onMouseMove={handleMouseMove} onMouseLeave={resetTilt}>
+    cardRef.current.style.transform =
+      "rotateX(0deg) rotateY(0deg)";
+  };
+  const audioRef = useRef(null);
 
-  {/* 🌌 GALAXY LAYERS */}
-<div className="galaxy">
+  useEffect(() => {
+    audioRef.current = new Audio("/music.mp3");
 
-<div className="layer stars"></div>
-<div className="layer stars2"></div>
-<div className="layer glow"></div>
+    audioRef.current.loop = true;
 
-</div>
+    audioRef.current.volume = 0.18;
+
+    audioRef.current.play().catch(() => {
+      document.addEventListener(
+        "click",
+        () => {
+          audioRef.current.play();
+        },
+        { once: true }
+      );
+    });
+
+    return () => {
+      audioRef.current?.pause();
+    };
+  }, []);
+
+  return (
+    <div
+      className="page"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={resetTilt}
+    >
+      {/* Meteor Background */}
+      <div className="meteors">
+        {[...Array(20)].map((_, index) => (
+          <span
+            key={index}
+            style={{
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${index * 0.5}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Landing Screen */}
+      {!open ? (
+        <div className="hero">
+
+          <FaTrophy className="logo" />
+
+          <h1>Birthday Mode</h1>
+
+          <p>
+            Built for someone worth celebrating
+          </p>
+
+          <input
+            type="text"
+            placeholder="Enter celebrant name"
+            value={name}
+            onChange={(e) =>
+              setName(e.target.value)
+            }
+          />
+
+          <button onClick={handleOpen}>
+            <FaPlay />
+            <span>
+              Start Experience
+            </span>
+          </button>
+
+        </div>
+      ) : (
+
+        /* Birthday Card */
+        <div
+          className="card"
+          ref={cardRef}
+        >
+
+          
+        <div className="title">
+
+          <h1>
+            Happy Birthday
+          </h1>
+
+          <h2>
+            {name}
+          </h2>
+
+        </div>
 
 
-{/* METEORS */}
-<div className="meteors">
-{[...Array(18)].map((_, i) => (
-<span key={i}
-style={{ left: `${Math.random()*100}%`, animationDelay: `${i*0.4}s` }}
-/>
-))}
-</div>
 
-{/* TWINKLES */}
-<div className="twinkles">
-{[...Array(40)].map((_, i) => (
-<i key={i}
-style={{
-top: `${Math.random()*100}%`,
-left: `${Math.random()*100}%`,
-animationDelay: `${Math.random()*3}s`
-}}
-/>
-))}
-</div>
+          <div className="typing">
 
-{!open ? (
-<div className="hero">
-<h1>For Someone Elegant</h1>
-<p>A birthday surprise crafted with care</p>
-<button onClick={handleOpen}>Open</button>
-</div>
-) : (
+            <Typewriter
+              words={[
+                "Another year.",
+                "Another level unlocked.",
+                "More wins ahead.",
+                "Keep moving upward.",
+              ]}
+              loop={0}
+              cursor
+              cursorStyle="|"
+              typeSpeed={55}
+            />
 
-<div className="card" ref={cardRef}>
+          </div>
 
-<div className="music">
-<FaMusic /> Soft ambience
-</div>
+          <button
+            className="unlock"
+            onClick={() =>
+              setUnlock(true)
+            }
+          >
+            <FaGift />
+            <span>
+              Unlock Message
+            </span>
+          </button>
 
-<h1>Happy Birthday ✨</h1>
+          {unlock && (
+            <div
+              className={`message ${
+                unlock ? "show" : ""
+              }`}
+            >
 
-{/* 💌 ENVELOPE 3D FLIP */}
-<div
-className={`envelope ${openEnvelope ? "open" : ""}`}
-onClick={() => setOpenEnvelope(true)}
->
+              <h3>
+                🏆 Achievement Unlocked
+              </h3>
 
-<div className="envelope-inner">
+              <p>
+                Wishing you growth,
+                good health,
+                bigger opportunities
+                and wins that match
+                your effort.
 
-{/* front */}
-<div className="envelope-front">
-<FaEnvelopeOpen />
-<p>Tap to open letter</p>
-</div>
+                Keep building.
 
-{/* back / letter */}
-<div className="envelope-back">
-<div className="letter-content">
-<Typewriter
-words={[
-"May your days be soft...",
-"your heart be light...",
-"and your year be beautiful 🤍"
-]}
-loop={5}
-cursor
-cursorStyle="|"
-typeSpeed={110}
-deleteSpeed={100}
-delaySpeed={1500}
-/>
-</div>
-</div>
+                Keep winning.
+              </p>
 
-</div>
+            </div>
+          )}
 
-</div>
+        </div>
 
-<div className="gift" onClick={() => setShowGift(true)}>
-<FaGift />
-</div>
-
-{showGift && (
-<div className="message">
-You deserve beautiful things. Stay graceful. Keep shining 🤍
-</div>
-)}
-
-</div>
-
-)}
-
-</div>
-);
+      )}
+    </div>
+  );
 }
