@@ -336,7 +336,7 @@ export default function App() {
 
                 <h3>
 
-                  🏆 Achievement Unlocked
+                  🏆 A King was Born Today !!!
 
                 </h3>
 
