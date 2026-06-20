@@ -1,7 +1,8 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
 import confetti from "canvas-confetti";
+
 import { Typewriter } from "react-simple-typewriter";
-import { useEffect } from "react";
 
 import {
   FaGift,
@@ -12,197 +13,398 @@ import {
 import "./App.css";
 
 export default function App() {
-  const [open, setOpen] = useState(false);
-  const [unlock, setUnlock] = useState(false);
-  const [name, setName] = useState("");
 
-  const cardRef = useRef(null);
+  const [open, setOpen] =
+    useState(false);
+
+  const [unlock, setUnlock] =
+    useState(false);
+
+  const [name, setName] =
+    useState("");
+
+  const [shake, setShake] =
+    useState(false);
+
+  const audioRef =
+    useRef(null);
+
+  /* ====================
+     MUSIC
+  ==================== */
+
+  useEffect(() => {
+
+    audioRef.current =
+      new Audio("/music.mp3");
+
+    audioRef.current.loop =
+      true;
+
+    audioRef.current.volume =
+      0.18;
+
+    audioRef.current
+      .play()
+
+      .catch(() => {
+
+        document.addEventListener(
+
+          "click",
+
+          () => {
+
+            audioRef.current.play();
+
+          },
+
+          { once: true }
+
+        );
+
+      });
+
+    return () => {
+
+      audioRef.current?.pause();
+
+    };
+
+  }, []);
+
+  /* ====================
+     START EXPERIENCE
+  ==================== */
 
   const handleOpen = () => {
-    if (!name.trim()) return;
+
+    if (!name.trim())
+      return;
 
     confetti({
+
       particleCount: 180,
+
       spread: 90,
-      origin: { y: 0.6 },
+
+      origin: {
+        y: 0.6
+      }
+
     });
 
     setOpen(true);
+
   };
 
-  const handleMouseMove = (e) => {
-    if (!cardRef.current) return;
+  /* ====================
+     UNLOCK MESSAGE
+  ==================== */
 
-    const rotateX =
-      (window.innerHeight / 2 - e.clientY) / 30;
+  const unlockMessage = () => {
 
-    const rotateY =
-      (window.innerWidth / 2 - e.clientX) / 30;
+    setShake(true);
 
-    cardRef.current.style.transform =
-      `rotateX(${rotateX}deg)
-       rotateY(${-rotateY}deg)`;
+    setTimeout(() => {
+
+      setShake(false);
+
+      setUnlock(true);
+
+    }, 250);
+
   };
-
-  const resetTilt = () => {
-    if (!cardRef.current) return;
-
-    cardRef.current.style.transform =
-      "rotateX(0deg) rotateY(0deg)";
-  };
-  const audioRef = useRef(null);
-
-  useEffect(() => {
-    audioRef.current = new Audio("/music.mp3");
-
-    audioRef.current.loop = true;
-
-    audioRef.current.volume = 0.18;
-
-    audioRef.current.play().catch(() => {
-      document.addEventListener(
-        "click",
-        () => {
-          audioRef.current.play();
-        },
-        { once: true }
-      );
-    });
-
-    return () => {
-      audioRef.current?.pause();
-    };
-  }, []);
 
   return (
+
     <div
       className="page"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={resetTilt}
     >
-      {/* Meteor Background */}
+
+      {/* METEORS */}
+
       <div className="meteors">
-        {[...Array(20)].map((_, index) => (
-          <span
-            key={index}
-            style={{
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${index * 0.5}s`,
-            }}
-          />
-        ))}
-      </div>
 
-      {/* Landing Screen */}
-      {!open ? (
-        <div className="hero">
+        {
 
-          <FaTrophy className="logo" />
+          [...Array(20)]
 
-          <h1>Birthday Mode</h1>
+          .map((_, i) => (
 
-          <p>
-            Built for someone worth celebrating
-          </p>
+            <span
 
-          <input
-            type="text"
-            placeholder="Enter celebrant name"
-            value={name}
-            onChange={(e) =>
-              setName(e.target.value)
-            }
-          />
+              key={i}
 
-          <button onClick={handleOpen}>
-            <FaPlay />
-            <span>
-              Start Experience
-            </span>
-          </button>
+              style={{
 
-        </div>
-      ) : (
+                left:
 
-        /* Birthday Card */
-        <div
-          className="card"
-          ref={cardRef}
-        >
+                  `${Math.random()*100}%`,
 
-          
-        <div className="title">
+                animationDelay:
 
-          <h1>
-            Happy Birthday
-          </h1>
+                  `${i*.45}s`
 
-          <h2>
-            {name}
-          </h2>
+              }}
 
-        </div>
-
-
-
-          <div className="typing">
-
-            <Typewriter
-              words={[
-                "Another year.",
-                "Another level unlocked.",
-                "More wins ahead.",
-                "Keep moving upward.",
-              ]}
-              loop={0}
-              cursor
-              cursorStyle="|"
-              typeSpeed={55}
             />
 
-          </div>
+          ))
 
-          <button
-            className="unlock"
-            onClick={() =>
-              setUnlock(true)
-            }
-          >
-            <FaGift />
-            <span>
-              Unlock Message
-            </span>
-          </button>
+        }
 
-          {unlock && (
+      </div>
+
+      {/* CONTENT */}
+
+      <div className="content">
+
+        {
+
+          !open ? (
+
             <div
-              className={`message ${
-                unlock ? "show" : ""
-              }`}
+              className="hero"
             >
 
-              <h3>
-                🏆 Achievement Unlocked
-              </h3>
+              <FaTrophy
+                className="logo"
+              />
+
+              <h1>
+                Birthday Package
+              </h1>
 
               <p>
-                Wishing you growth,
-                good health,
-                bigger opportunities
-                and wins that match
-                your effort.
 
-                Keep building.
+                Built for
+                someone worth
+                celebrating
 
-                Keep winning.
               </p>
 
+              <input
+
+                placeholder=
+
+                "Celebrant name"
+
+                value={name}
+
+                onChange={(e)=>
+
+                  setName(
+                    e.target.value
+                  )
+
+                }
+
+              />
+
+              <button
+
+                onClick={
+                  handleOpen
+                }
+
+              >
+
+                <FaPlay />
+
+                Start Experience
+
+              </button>
+
             </div>
-          )}
 
-        </div>
+          ) : (
 
-      )}
+            <div
+
+              className={`
+
+                card
+
+                ${
+
+                  shake
+
+                  ?
+
+                  "shake"
+
+                  :
+
+                  ""
+
+                }
+
+              `}
+
+            >
+
+              <div
+                className="title"
+              >
+
+                <h1>
+
+                  Happy Birthday
+
+                </h1>
+
+                <h2>
+
+                  {name}
+
+                </h2>
+
+              </div>
+
+              <div
+                className="typing"
+              >
+
+                <Typewriter
+
+                  words={[
+
+                    "Another year.",
+
+                    "Another level unlocked.",
+
+                    "More wins ahead.",
+
+                    "Keep moving upward."
+
+                  ]}
+
+                  loop={0}
+
+                  cursor
+
+                  typeSpeed={55}
+
+                />
+
+              </div>
+
+              <button
+
+                className=
+
+                "unlock"
+
+                onClick={
+
+                  unlockMessage
+
+                }
+
+              >
+
+                <FaGift />
+
+                Unlock Message
+
+              </button>
+
+              <div
+
+                className={`
+
+                  message
+
+                  ${
+
+                    unlock
+
+                    ?
+
+                    "show"
+
+                    :
+
+                    ""
+
+                  }
+
+                `}
+
+              >
+
+                <h3>
+
+                  🏆 Achievement Unlocked
+
+                </h3>
+
+                <p>
+
+                  Wishing you
+                  growth,
+                  good health,
+                  solid memories
+                  and opportunities
+                  that match
+                  your effort.
+
+                </p>
+
+                <p>
+
+                  Keep building.
+
+                  Keep winning.
+
+                </p>
+
+                <p>
+
+                  Happy Birthday.
+
+                </p>
+
+              </div>
+
+            </div>
+
+          )
+
+        }
+
+        {/* SIGNATURE */}
+
+        <footer
+          className="signature"
+        >
+
+          <div
+            className=
+
+            "signature-line"
+
+          />
+
+          <p>
+
+            Genuine wishes from.....
+
+          </p>
+
+          <span>
+
+            Sylvie🧡
+
+          </span>
+
+        </footer>
+
+      </div>
+
     </div>
+
   );
+
 }

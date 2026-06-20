@@ -1,6 +1,9 @@
 /* ==========================
    FONTS
 ========================== */
+@import url(
+"https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@300;400;500&family=Cormorant+Garamond:wght@500;600&display=swap"
+);
 
 @import url(
 "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@300;400;500&display=swap"
@@ -14,6 +17,11 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
+}
+
+/* trigger class */
+.shake{
+animation:hapticShake 250ms ease;
 }
 
 html,
@@ -260,9 +268,46 @@ z-index:2;
 
 overflow:hidden;
 
-transition:
 
-transform .2s;
+}
+
+.card{
+
+animation:
+
+cardEnter
+
+900ms
+
+ease;
+
+}
+
+@keyframes cardEnter{
+
+from{
+
+opacity:0;
+
+transform:
+
+translateY(
+25px
+);
+
+}
+
+to{
+
+opacity:1;
+
+transform:
+
+translateY(
+0
+);
+
+}
 
 }
 
@@ -508,6 +553,14 @@ text-align:center;
    MESSAGE
 ========================== */
 
+/* ==========================
+   FLOAT-IN MESSAGE
+========================== */
+
+/* ==========================
+   CLEAN FLOAT-IN MESSAGE (NO BLUR)
+========================== */
+
 .message{
 
 width:100%;
@@ -522,52 +575,86 @@ opacity:0;
 
 padding:0 22px;
 
+margin-top:12px;
+
 background:
 
 rgba(
 255,
 255,
 255,
-0.04
+0.05
 );
 
 border-radius:20px;
 
 transform:
 
-translateY(-10px);
+translateY(
+40px
+)
+
+scale(
+0.96
+);
+
+box-shadow:
+
+0 0 0
+
+rgba(
+212,
+175,
+55,
+0
+);
 
 transition:
 
-all .6s ease;
+max-height .6s ease,
+
+padding .4s ease;
 
 }
+
+/* OPEN STATE */
 
 .message.show{
 
-max-height:220px;
+max-height:280px;
 
-padding:22px;
+padding:24px;
 
-opacity:1;
+animation:
 
-transform:
+floatReveal
 
-translateY(0);
+1000ms
+
+cubic-bezier(
+0.22,
+1,
+0.36,
+1
+)
+
+forwards;
 
 }
+
+/* CONTENT */
 
 .message h3{
 
 margin-bottom:14px;
 
-color:
-
-#D4AF37;
-
 font-family:
 
 "Space Grotesk";
+
+color:
+
+#D4AF37;
 
 }
 
@@ -576,6 +663,94 @@ font-family:
 line-height:2;
 
 }
+
+/* FLOAT ANIMATION (NO BLUR VERSION) */
+
+@keyframes floatReveal{
+
+0%{
+
+opacity:0;
+
+transform:
+
+translateY(
+50px
+)
+
+scale(
+0.94
+);
+
+box-shadow:
+
+0 0 0
+
+rgba(
+212,
+175,
+55,
+0
+);
+
+}
+
+50%{
+
+opacity:.9;
+
+transform:
+
+translateY(
+-6px
+)
+
+scale(
+1.02
+);
+
+box-shadow:
+
+0 0 50px
+
+rgba(
+212,
+175,
+55,
+0.15
+);
+
+}
+
+100%{
+
+opacity:1;
+
+transform:
+
+translateY(
+0
+)
+
+scale(
+1
+);
+
+box-shadow:
+
+0 0 25px
+
+rgba(
+212,
+175,
+55,
+0.08
+);
+
+}
+
+}
+
 
 /* ==========================
    MOBILE
@@ -664,6 +839,101 @@ font-size:18px;
 .message{
 
 font-size:14px;
+
+}
+
+}
+/* ==========================
+   PAGE WRAPPER
+========================== */
+
+.content{
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+justify-content:center;
+
+}
+
+/* ==========================
+   SIGNATURE
+========================== */
+
+.signature{
+
+margin-top:18px;
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+gap:8px;
+
+}
+
+/* LINE */
+
+.signature-line{
+
+width:120px;
+
+height:1px;
+
+background:
+
+linear-gradient(
+90deg,
+transparent,
+rgba(212,175,55,.8),
+transparent
+);
+
+}
+
+/* TEXT */
+
+.signature p{
+
+margin:0;
+font-style: italic;
+font-size:13px;
+
+opacity:.55;
+
+}
+
+/* SCRIPT */
+
+.signature span{
+
+font-family:
+
+"Cormorant Garamond",
+serif;
+
+color:#D4AF37;
+
+line-height:1;
+font-size: 17px;
+font-style:italic;
+
+font-weight:600;
+
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.signature span{
+
+font-size: 22px;
 
 }
 
